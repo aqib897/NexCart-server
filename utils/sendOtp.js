@@ -10,6 +10,10 @@ const sendOtp = async (email, subject, otp) => {
       user: process.env.EMAIL,
       pass: process.env.PASSWORD,
     },
+
+    connectionTimeout: 10000,
+    greetingTimeout: 10000,
+    socketTimeout: 10000,
   });
 
   const html = `<!DOCTYPE html>
