@@ -109,12 +109,12 @@ const sendOtp = async (email, subject, otp) => {
 </body>
 </html>`;
 
-  await transporter.sendMail({
-    from: process.env.EMAIL,
-    to: email,
-    subject: subject,
-    html,
-  });
+  //   await transporter.sendMail({
+  //     from: process.env.EMAIL,
+  //     to: email,
+  //     subject: subject,
+  //     html,
+  //   });
 };
 
 export default sendOtp;
