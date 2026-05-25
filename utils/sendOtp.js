@@ -105,6 +105,13 @@ const sendOtp = async (email, subject, otp) => {
 </body>
 </html>`;
 
+  console.log("BREVO LOGIN:", process.env.BREVO_LOGIN);
+  console.log("BREVO SENDER:", process.env.BREVO_SENDER);
+  console.log("SMTP KEY EXISTS:", !!process.env.BREVO_SMTP_KEY);
+
+  await transporter.verify();
+  console.log("SMTP server is ready");
+
   await transporter.sendMail({
     from: process.env.BREVO_SENDER,
     to: email,
