@@ -7,28 +7,44 @@ import { Address } from "../models/Address.js";
 import { Order } from "../models/Order.js";
 
 export const loginUser = TryCatch(async (req, res) => {
-  const { email } = req.body;
+  try {
+    console.log("LOGIN STARTED");
+    const { email } = req.body;
 
-  const subject = "NexCart OTP Verification";
+    const subject = "NexCart OTP Verification";
 
-  const otp = Math.floor(100000 + Math.random() * 900000);
+    const otp = Math.floor(100000 + Math.random() * 900000);
+    console.log("OTP GENERATED:", otp);
 
-  const prevOtp = await OTP.findOne({
-    email,
-  });
+    const prevOtp = await OTP.findOne({
+      email,
+    });
 
-  if (prevOtp) {
-    await prevOtp.deleteOne();
+    console.log("PREV OTP CHECKED");
+
+    if (prevOtp) {
+      await prevOtp.deleteOne();
+      console.log("PREV OTP DELETED");
+    }
+    console.log("CALLING SEND OTP");
+    await sendOtp(email, subject, otp);
+    console.log("OTP SENT SUCCESS");
+
+    await OTP.create({ email, otp });
+    console.log("OTP SAVED");
+
+    res.json({
+      success: true,
+      message: "OTP sent to your email",
+    });
+  } catch (error) {
+    console.log("LOGIN ERROR:", error);
+
+    return res.status(500).json({
+      success: false,
+      message: error.message,
+    });
   }
-
-  await sendOtp(email, subject, otp);
-
-  await OTP.create({ email, otp });
-
-  res.json({
-    success: true,
-    message: "OTP sent to your email",
-  });
 });
 
 export const verifyUser = TryCatch(async (req, res) => {

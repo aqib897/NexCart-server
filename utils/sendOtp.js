@@ -10,10 +10,6 @@ const sendOtp = async (email, subject, otp) => {
       user: process.env.BREVO_LOGIN,
       pass: process.env.BREVO_SMTP_KEY,
     },
-
-    connectionTimeout: 10000,
-    greetingTimeout: 10000,
-    socketTimeout: 10000,
   });
 
   const html = `<!DOCTYPE html>
@@ -113,14 +109,11 @@ const sendOtp = async (email, subject, otp) => {
   console.log("BREVO SENDER:", process.env.BREVO_SENDER);
   console.log("SMTP KEY EXISTS:", !!process.env.BREVO_SMTP_KEY);
 
-  await transporter.verify();
-  console.log("SMTP server is ready");
-
   await transporter.sendMail({
-    from: process.env.BREVO_SENDER,
+    from: process.env.BREVO_LOGIN,
     to: email,
-    subject: subject,
-    html,
+    subject: "Test OTP",
+    html: `<h1>Your OTP is ${otp}</h1>`,
   });
 };
 
