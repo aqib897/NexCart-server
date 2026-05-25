@@ -110,9 +110,9 @@ const sendOtp = async (email, subject, otp) => {
   console.log("SMTP KEY EXISTS:", !!process.env.BREVO_SMTP_KEY);
 
   await transporter.sendMail({
-    from: process.env.BREVO_LOGIN,
+    from: `"NexCart" <${process.env.BREVO_SENDER}>`,
     to: email,
-    subject: "Test OTP",
+    subject: subject,
     html: `<h1>Your OTP is ${otp}</h1>`,
   });
 };
