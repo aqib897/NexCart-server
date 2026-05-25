@@ -2,18 +2,14 @@ import { createTransport } from "nodemailer";
 
 const sendOtp = async (email, subject, otp) => {
   const transporter = createTransport({
-    host: "smtp.gmail.com",
+    host: "smtp-relay.brevo.com",
     port: 587,
     secure: false,
-    family: 4,
-    auth: {
-      user: process.env.EMAIL,
-      pass: process.env.PASSWORD,
-    },
 
-    connectionTimeout: 10000,
-    greetingTimeout: 10000,
-    socketTimeout: 10000,
+    auth: {
+      user: process.env.BREVO_LOGIN,
+      pass: process.env.BREVO_SMTP_KEY,
+    },
   });
 
   const html = `<!DOCTYPE html>
@@ -109,12 +105,12 @@ const sendOtp = async (email, subject, otp) => {
 </body>
 </html>`;
 
-  //   await transporter.sendMail({
-  //     from: process.env.EMAIL,
-  //     to: email,
-  //     subject: subject,
-  //     html,
-  //   });
+  await transporter.sendMail({
+    from: process.env.BREVO_SENDER,
+    to: email,
+    subject: subject,
+    html,
+  });
 };
 
 export default sendOtp;
