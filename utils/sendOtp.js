@@ -10,6 +10,10 @@ const sendOtp = async (email, subject, otp) => {
       user: process.env.BREVO_LOGIN,
       pass: process.env.BREVO_SMTP_KEY,
     },
+
+    connectionTimeout: 30000,
+    greetingTimeout: 30000,
+    socketTimeout: 30000,
   });
 
   const html = `<!DOCTYPE html>
@@ -105,15 +109,11 @@ const sendOtp = async (email, subject, otp) => {
 </body>
 </html>`;
 
-  console.log("BREVO LOGIN:", process.env.BREVO_LOGIN);
-  console.log("BREVO SENDER:", process.env.BREVO_SENDER);
-  console.log("SMTP KEY EXISTS:", !!process.env.BREVO_SMTP_KEY);
-
   await transporter.sendMail({
     from: `"NexCart" <${process.env.BREVO_SENDER}>`,
     to: email,
     subject: subject,
-    html: `<h1>Your OTP is ${otp}</h1>`,
+    html: html,
   });
 };
 

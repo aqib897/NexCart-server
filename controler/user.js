@@ -8,30 +8,22 @@ import { Order } from "../models/Order.js";
 
 export const loginUser = TryCatch(async (req, res) => {
   try {
-    console.log("LOGIN STARTED");
     const { email } = req.body;
 
     const subject = "NexCart OTP Verification";
 
     const otp = Math.floor(100000 + Math.random() * 900000);
-    console.log("OTP GENERATED:", otp);
 
     const prevOtp = await OTP.findOne({
       email,
     });
 
-    console.log("PREV OTP CHECKED");
-
     if (prevOtp) {
       await prevOtp.deleteOne();
-      console.log("PREV OTP DELETED");
     }
-    console.log("CALLING SEND OTP");
     await sendOtp(email, subject, otp);
-    console.log("OTP SENT SUCCESS");
 
     await OTP.create({ email, otp });
-    console.log("OTP SAVED");
 
     res.json({
       success: true,
