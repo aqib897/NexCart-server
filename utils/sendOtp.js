@@ -32,16 +32,27 @@ const sendOtp = async (email, subject, otp) => {
           style="max-width:480px;background:#ffffff;border-radius:16px;overflow:hidden;border:1px solid #e4e4e7;">
 
           <tr>
-  <td style="background:#09090b;padding:32px 40px;text-align:center;">
-    <img 
-      src="https://res.cloudinary.com/dv4vezujo/image/upload/v1779789065/nexcart-logo_e9uol0.svg"
-      alt="NexCart"
-      style="
-        height:55px;
-        width:auto;
-        object-fit:contain;
-      "
-    />
+  <td style="background:#09090b;padding:32px 40px;">
+
+    <table width="100%" cellpadding="0" cellspacing="0">
+      <tr>
+        <td align="center">
+
+          <img 
+            src="https://res.cloudinary.com/dv4vezujo/image/upload/v1779789065/nexcart-logo_e9uol0.svg"
+            alt="NexCart"
+            style="
+              display:block;
+              margin:0 auto;
+              height:55px;
+              width:auto;
+            "
+          />
+
+        </td>
+      </tr>
+    </table>
+
   </td>
 </tr>
 
