@@ -8,13 +8,18 @@ const sendOrderConfirmation = async ({
   totalAmount,
 }) => {
   const transporter = createTransport({
-    host: "smtp.gmail.com",
-    port: 465,
-    secure: true,
+    host: "smtp-relay.brevo.com",
+    port: 2525,
+    secure: false,
+
     auth: {
-      user: process.env.EMAIL,
-      pass: process.env.PASSWORD,
+      user: process.env.BREVO_LOGIN,
+      pass: process.env.BREVO_SMTP_KEY,
     },
+
+    connectionTimeout: 30000,
+    greetingTimeout: 30000,
+    socketTimeout: 30000,
   });
 
   const productsHtml = products
@@ -53,9 +58,17 @@ const sendOrderConfirmation = async ({
 
           <tr>
             <td style="background:#09090b;padding:32px 40px;text-align:center;">
-              <p style="margin:0 0 16px;font-size:22px;font-weight:700;
-                color:#ffffff;letter-spacing:-0.3px;">NexCart</p>
-              <!-- Success icon -->
+              <img 
+  src="https://res.cloudinary.com/dv4vezujo/image/upload/v1779789065/nexcart-logo_e9uol0.svg"
+  alt="NexCart"
+  style="
+    height:55px;
+    width:auto;
+    object-fit:contain;
+    margin-bottom:16px;
+  "
+/>
+              
               <table cellpadding="0" cellspacing="0" style="margin:0 auto 12px;">
                 <tr>
                   <td align="center"
@@ -116,7 +129,7 @@ const sendOrderConfirmation = async ({
               <table width="100%" cellpadding="0" cellspacing="0"
                 style="border:1px solid #f4f4f5;border-radius:10px;
                        overflow:hidden;margin-bottom:0;">
-                <!-- Table header -->
+            
                 <tr style="background:#f4f4f5;">
                   <td style="padding:10px 16px;font-size:11px;font-weight:600;
                     letter-spacing:1px;color:#a1a1aa;text-transform:uppercase;">
@@ -209,10 +222,10 @@ const sendOrderConfirmation = async ({
 </html>`;
 
   await transporter.sendMail({
-    from: process.env.EMAIL,
+    from: `"NexCart" <${process.env.BREVO_SENDER}>`,
     to: email,
     subject: subject,
-    html,
+    html: html,
   });
 };
 
