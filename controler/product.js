@@ -6,6 +6,35 @@ import cloudinary from "cloudinary";
 export const addReview = async (req, res) => {
   try {
     const { rating, comment, name } = req.body;
+    const imageFiles = req.files?.images || [];
+    const videoFiles = req.files?.videos || [];
+
+    for (const file of imageFiles) {
+      const base64 = `data:${file.mimetype};base64,${file.buffer.toString("base64")}`;
+
+      const result = await cloudinary.v2.uploader.upload(base64, {
+        folder: "nexcart/reviews/images",
+      });
+
+      images.push({
+        id: result.public_id,
+        url: result.secure_url,
+      });
+    }
+
+    for (const file of videoFiles) {
+      const base64 = `data:${file.mimetype};base64,${file.buffer.toString("base64")}`;
+
+      const result = await cloudinary.v2.uploader.upload(base64, {
+        resource_type: "video",
+        folder: "nexcart/reviews/videos",
+      });
+
+      videos.push({
+        id: result.public_id,
+        url: result.secure_url,
+      });
+    }
 
     if (!name || !comment || !rating) {
       return res.status(400).json({
@@ -22,6 +51,7 @@ export const addReview = async (req, res) => {
     }
 
     const review = {
+      user: req.user._id,
       name,
       rating: Number(rating),
       comment,
@@ -47,6 +77,93 @@ export const addReview = async (req, res) => {
 
     res.status(201).json({
       message: "Review Added",
+    });
+  } catch (error) {
+    res.status(500).json({
+      message: error.message,
+    });
+  }
+};
+
+export const editReview = async (req, res) => {
+  try {
+    const { comment, rating } = req.body;
+
+    const product = await Product.findById(req.params.productId);
+
+    const review = product.reviews.id(req.params.reviewId);
+
+    if (!review) {
+      return res.status(404).json({
+        message: "Review not found",
+      });
+    }
+
+    if (review.user.toString() !== req.user._id.toString()) {
+      return res.status(403).json({
+        message: "Unauthorized",
+      });
+    }
+
+    review.comment = comment;
+    review.rating = rating;
+
+    product.rating =
+      product.reviews.reduce((acc, item) => acc + item.rating, 0) /
+      product.reviews.length;
+
+    await product.save();
+
+    res.json({
+      message: "Review Updated",
+    });
+  } catch (error) {
+    res.status(500).json({
+      message: error.message,
+    });
+  }
+};
+export const deleteReview = async (req, res) => {
+  try {
+    const product = await Product.findById(req.params.productId);
+
+    if (!product) {
+      return res.status(404).json({
+        message: "Product not found",
+      });
+    }
+
+    const review = product.reviews.id(req.params.reviewId);
+
+    if (!review) {
+      return res.status(404).json({
+        message: "Review not found",
+      });
+    }
+
+    if (
+      review.user.toString() !== req.user._id.toString() &&
+      req.user.role !== "admin"
+    ) {
+      return res.status(403).json({
+        message: "Unauthorized",
+      });
+    }
+
+    product.reviews.pull(req.params.reviewId);
+
+    product.numReviews = product.reviews.length;
+
+    product.rating =
+      product.reviews.length > 0
+        ? product.reviews.reduce((acc, item) => acc + item.rating, 0) /
+          product.reviews.length
+        : 0;
+
+    await product.save();
+
+    res.json({
+      message: "Review Deleted",
     });
   } catch (error) {
     res.status(500).json({

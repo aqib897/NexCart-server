@@ -2,6 +2,11 @@ import mongoose from "mongoose";
 
 const reviewSchema = new mongoose.Schema(
   {
+    user: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      required: true,
+    },
     name: {
       type: String,
       required: true,
@@ -16,6 +21,19 @@ const reviewSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    images: [
+      {
+        id: String,
+        url: String,
+      },
+    ],
+
+    videos: [
+      {
+        id: String,
+        url: String,
+      },
+    ],
   },
   { timestamps: true },
 );
