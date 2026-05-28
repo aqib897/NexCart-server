@@ -6,8 +6,20 @@ import cloudinary from "cloudinary";
 export const addReview = async (req, res) => {
   try {
     const { rating, comment, name } = req.body;
+
+    const product = await Product.findById(req.params.id);
+
+    if (!product) {
+      return res.status(404).json({
+        message: "Product not found",
+      });
+    }
+
     const imageFiles = req.files?.images || [];
     const videoFiles = req.files?.videos || [];
+    
+    let images = []; 
+    let videos = [];
     
 
     for (const file of imageFiles) {
@@ -40,14 +52,6 @@ export const addReview = async (req, res) => {
     if (!name || !comment || !rating) {
       return res.status(400).json({
         message: "All fields are required",
-      });
-    }
-
-    const product = await Product.findById(req.params.id);
-
-    if (!product) {
-      return res.status(404).json({
-        message: "Product not found",
       });
     }
     
