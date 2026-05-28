@@ -115,10 +115,21 @@ export const getAllUsers = TryCatch(async (req, res) => {
       return {
         ...user._doc,
 
-        phone: address?.phone || "N/A",
+        name: user.name || "N/A",
 
-        address: address?.address || "N/A",
-      };
+  phone: address?.phone || "N/A",
+
+  fullAddress: address
+    ? `${address.address1 || ""}, 
+       ${address.address2 || ""}, 
+       ${address.landmark || ""}, 
+       ${address.city || ""}, 
+       ${address.state || ""} - 
+       ${address.pincode || ""}`
+    : "N/A",
+
+  addressType: address?.type || "N/A",
+};
     }),
   );
 
