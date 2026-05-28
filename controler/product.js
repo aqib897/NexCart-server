@@ -5,7 +5,7 @@ import cloudinary from "cloudinary";
 
 export const addReview = async (req, res) => {
   try {
-    const { rating, comment, name } = req.body;
+    const { rating, comment } = req.body;
 
     const product = await Product.findById(req.params.id);
 
@@ -57,7 +57,7 @@ export const addReview = async (req, res) => {
     
     const review = {
       user: req.user._id,
-      name,
+      name: req.user.name,
       rating: Number(rating),
       comment,
       images,
