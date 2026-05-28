@@ -7,6 +7,7 @@ import {
   updateProduct,
   updateProductImage,
   deleteProduct,
+  addReview,
 } from "../controler/product.js";
 import uploadFiles from "../middlewares/multer.js";
 
@@ -19,5 +20,6 @@ router.get("/product/:id", getSingleProduct);
 router.put("/product/:id", isAuth, updateProduct);
 router.post("/product/:id", isAuth, uploadFiles, updateProductImage);
 router.delete("/product/:id", isAuth, deleteProduct);
+router.post("/product/:id/review", addReview);
 
 export default router;

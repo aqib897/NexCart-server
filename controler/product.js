@@ -3,6 +3,43 @@ import bufferGenerator from "../utils/bufferGenerator.js";
 import TryCatch from "../utils/TryCatch.js";
 import cloudinary from "cloudinary";
 
+export const addReview = async (req, res) => {
+  try {
+    const { rating, comment, name } = req.body;
+
+    const product = await Product.findById(req.params.id);
+
+    if (!product) {
+      return res.status(404).json({
+        message: "Product not found",
+      });
+    }
+
+    const review = {
+      name,
+      rating: Number(rating),
+      comment,
+    };
+
+    product.reviews.unshift(review);
+
+    product.numReviews = product.reviews.length;
+
+    product.rating =
+      product.reviews.reduce((acc, item) => item.rating + acc, 0) /
+      product.reviews.length;
+
+    await product.save();
+
+    res.status(201).json({
+      message: "Review Added",
+    });
+  } catch (error) {
+    res.status(500).json({
+      message: error.message,
+    });
+  }
+};
 export const createProduct = TryCatch(async (req, res) => {
   if (req.user.role !== "admin")
     return res.status(403).json({
