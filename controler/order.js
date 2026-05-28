@@ -9,7 +9,7 @@ import dotenv from "dotenv";
 dotenv.config();
 
 export const newOrderCod = TryCatch(async (req, res) => {
-  const { method, phone, address } = req.body;
+const { method, name, phone, address } = req.body;
 
   const cart = await Cart.find({ user: req.user._id }).populate({
     path: "product",
@@ -39,6 +39,7 @@ export const newOrderCod = TryCatch(async (req, res) => {
     items,
     method,
     user: req.user._id,
+    name,
     phone,
     address,
     subTotal,
@@ -173,7 +174,7 @@ const stripe = new Stripe(process.env.Stripe_Secret_Key);
 
 export const newOrderOnline = async (req, res) => {
   try {
-    const { method, phone, address } = req.body;
+    const { method, name, phone, address } = req.body;
 
     const cart = await Cart.find({ user: req.user._id }).populate("product");
 
@@ -209,6 +210,7 @@ export const newOrderOnline = async (req, res) => {
       metadata: {
         userId: req.user._id.toString(),
         method,
+        name,
         phone,
         address,
         subTotal,
@@ -232,7 +234,14 @@ export const verifyPayment = async (req, res) => {
   try {
     const session = await stripe.checkout.sessions.retrieve(sessionId);
 
-    const { userId, method, phone, address, subTotal } = session.metadata;
+    const {
+      userId,
+      method,
+      name,
+      phone,
+      address,
+      subTotal,
+    } = session.metadata;
 
     const cart = await Cart.find({ user: userId }).populate("product");
 
@@ -261,6 +270,7 @@ export const verifyPayment = async (req, res) => {
         })),
         method,
         user: userId,
+        name,
         phone,
         address,
         subTotal,
@@ -278,7 +288,7 @@ export const verifyPayment = async (req, res) => {
         }
       }
 
-      await Cart.deleteMany({ user: req.user._id });
+      await Cart.deleteMany({ user: userId });
 
       await sendOrderConfirmation({
         email: req.user.email,
