@@ -49,7 +49,8 @@ export const addReview = async (req, res) => {
         message: "Product not found",
       });
     }
-
+    let images = [];
+    let videos = [];
     const review = {
       user: req.user._id,
       name,
