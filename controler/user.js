@@ -8,7 +8,7 @@ import { Order } from "../models/Order.js";
 
 export const loginUser = TryCatch(async (req, res) => {
   try {
-    const { email } = req.body;
+    const { email, name } = req.body;
 
     const subject = "NexCart OTP Verification";
 
@@ -23,7 +23,7 @@ export const loginUser = TryCatch(async (req, res) => {
     }
     await sendOtp(email, subject, otp);
 
-    await OTP.create({ email, otp });
+    await OTP.create({ name, email, otp });
 
     res.json({
       success: true,
@@ -40,7 +40,7 @@ export const loginUser = TryCatch(async (req, res) => {
 });
 
 export const verifyUser = TryCatch(async (req, res) => {
-  const { email, otp } = req.body;
+  const { email, otp, name } = req.body;
 
   const haveOtp = await OTP.findOne({
     email,
@@ -70,6 +70,7 @@ export const verifyUser = TryCatch(async (req, res) => {
     });
   } else {
     user = await User.create({
+      name: haveOtp.name,
       email,
     });
 
