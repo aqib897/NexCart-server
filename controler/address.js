@@ -1,6 +1,7 @@
 import { Address } from "../models/Address.js";
 import TryCatch from "../utils/TryCatch.js";
 import axios from "axios";
+import https from "https";
 
 export const updateAddress = TryCatch(async (req, res) => {
   const {
@@ -118,9 +119,9 @@ export const deleteAddress = TryCatch(async (req, res) => {
     const response = await axios.get(
       `https://api.postalpincode.in/pincode/${pin}`,
       {
-        httpsAgent: new (require("https").Agent)({
-          rejectUnauthorized: false,
-        }),
+        httpsAgent: new https.Agent({
+  rejectUnauthorized: false,
+}),
       }
     );
 
