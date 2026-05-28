@@ -8,6 +8,8 @@ import {
   updateProductImage,
   deleteProduct,
   addReview,
+  editReview,
+  deleteReview,
 } from "../controler/product.js";
 import uploadFiles from "../middlewares/multer.js";
 import reviewUpload from "../middlewares/reviewMulter.js";
