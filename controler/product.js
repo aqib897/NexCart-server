@@ -8,6 +8,7 @@ export const addReview = async (req, res) => {
     const { rating, comment, name } = req.body;
     const imageFiles = req.files?.images || [];
     const videoFiles = req.files?.videos || [];
+    
 
     for (const file of imageFiles) {
       const base64 = `data:${file.mimetype};base64,${file.buffer.toString("base64")}`;
@@ -49,8 +50,7 @@ export const addReview = async (req, res) => {
         message: "Product not found",
       });
     }
-    let images = [];
-    let videos = [];
+    
     const review = {
       user: req.user._id,
       name,
