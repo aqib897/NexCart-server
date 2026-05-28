@@ -125,6 +125,7 @@ export const deleteAddress = TryCatch(async (req, res) => {
     );
 
     const data = response.data[0];
+    console.log(response.data);
 
     if (
       data.Status !== "Success" ||
