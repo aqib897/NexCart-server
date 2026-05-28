@@ -55,6 +55,8 @@ export const addReview = async (req, res) => {
       name,
       rating: Number(rating),
       comment,
+      images,
+      videos,
     };
 
     const alreadyReviewed = product.reviews.find((r) => r.name === name);
@@ -142,6 +144,7 @@ export const deleteReview = async (req, res) => {
     }
 
     if (
+      review.user &&
       review.user.toString() !== req.user._id.toString() &&
       req.user.role !== "admin"
     ) {
