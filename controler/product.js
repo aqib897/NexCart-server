@@ -49,7 +49,7 @@ export const addReview = async (req, res) => {
       });
     }
 
-    if (!name || !comment || !rating) {
+    if (!comment || !rating) {
       return res.status(400).json({
         message: "All fields are required",
       });
@@ -64,7 +64,9 @@ export const addReview = async (req, res) => {
       videos,
     };
 
-    const alreadyReviewed = product.reviews.find((r) => r.name === name);
+    const alreadyReviewed = product.reviews.find(
+  (r) => r.user?.toString() === req.user._id.toString()
+);
 
     if (alreadyReviewed) {
       return res.status(400).json({
