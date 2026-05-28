@@ -1,5 +1,6 @@
 import { Cart } from "../models/Cart.js";
 import { Order } from "../models/Order.js";
+import { User } from "../models/User.js";
 import { Product } from "../models/Product.js";
 import sendOrderConfirmation from "../utils/sendOrderConfirmation.js";
 import TryCatch from "../utils/TryCatch.js";
@@ -194,7 +195,7 @@ export const newOrderOnline = async (req, res) => {
         currency: "inr",
         product_data: {
           name: item.product.title,
-          images: [item.product.images[0].url],
+          images: [item.product.images[0]?.url || ""],
         },
         unit_amount: Math.round(item.product.price * 100),
       },
@@ -244,6 +245,7 @@ export const verifyPayment = async (req, res) => {
     } = session.metadata;
 
     const cart = await Cart.find({ user: userId }).populate("product");
+    const user = await User.findById(userId);
 
     const items = cart.map((i) => {
       return {
@@ -291,7 +293,7 @@ export const verifyPayment = async (req, res) => {
       await Cart.deleteMany({ user: userId });
 
       await sendOrderConfirmation({
-        email: req.user.email,
+        email: user.email,
         subject: "Order Confirmation",
         orderId: order._id,
         products: items,
