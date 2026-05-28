@@ -6,9 +6,8 @@ import {
   getAllAddress,
   getSingleAddress,
   updateAddress,
+  getPincodeDetails,
 } from "../controler/address.js";
-
-import { getPincodeDetails } from "../controler/address.js";
 
 const router = express.Router();
 
