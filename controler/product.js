@@ -7,6 +7,12 @@ export const addReview = async (req, res) => {
   try {
     const { rating, comment, name } = req.body;
 
+    if (!name || !comment || !rating) {
+      return res.status(400).json({
+        message: "All fields are required",
+      });
+    }
+
     const product = await Product.findById(req.params.id);
 
     if (!product) {
@@ -20,6 +26,14 @@ export const addReview = async (req, res) => {
       rating: Number(rating),
       comment,
     };
+
+    const alreadyReviewed = product.reviews.find((r) => r.name === name);
+
+    if (alreadyReviewed) {
+      return res.status(400).json({
+        message: "You already reviewed this product",
+      });
+    }
 
     product.reviews.unshift(review);
 
