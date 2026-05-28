@@ -2,8 +2,19 @@ import { Address } from "../models/Address.js";
 import TryCatch from "../utils/TryCatch.js";
 
 export const updateAddress = TryCatch(async (req, res) => {
-  const { address, phone } = req.body;
-
+  const {
+  firstName,
+  lastName,
+  phone,
+  address1,
+  address2,
+  landmark,
+  city,
+  state,
+  pincode,
+  type,
+} = req.body;
+  
   const existingAddress = await Address.findOne({
     _id: req.params.id,
     user: req.user._id,
@@ -15,8 +26,22 @@ export const updateAddress = TryCatch(async (req, res) => {
     });
   }
 
-  existingAddress.address = address;
+  existingAddress.firstName = firstName;
+  existingAddress.lastName = lastName;
+  
   existingAddress.phone = phone;
+  
+  existingAddress.address1 = address1;
+  existingAddress.address2 = address2;
+  
+  existingAddress.landmark = landmark;
+  
+  existingAddress.city = city;
+  existingAddress.state = state;
+  
+  existingAddress.pincode = pincode;
+  
+  existingAddress.type = type;
 
   await existingAddress.save();
 
@@ -27,13 +52,32 @@ export const updateAddress = TryCatch(async (req, res) => {
 });
 
 export const addAddress = TryCatch(async (req, res) => {
-  const { address, phone } = req.body;
+  const {
+  firstName,
+  lastName,
+  phone,
+  address1,
+  address2,
+  landmark,
+  city,
+  state,
+  pincode,
+  type,
+} = req.body;
 
   await Address.create({
-    address,
-    phone,
-    user: req.user._id,
-  });
+  firstName,
+  lastName,
+  phone,
+  address1,
+  address2,
+  landmark,
+  city,
+  state,
+  pincode,
+  type,
+  user: req.user._id,
+});
 
   res.status(201).json({
     message: "Address created",
