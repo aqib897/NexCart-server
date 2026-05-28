@@ -1,5 +1,6 @@
 import { Address } from "../models/Address.js";
 import TryCatch from "../utils/TryCatch.js";
+import axios from "axios";
 
 export const updateAddress = TryCatch(async (req, res) => {
   const {
@@ -14,6 +15,38 @@ export const updateAddress = TryCatch(async (req, res) => {
   pincode,
   type,
 } = req.body;
+
+  export const getPincodeDetails = TryCatch(
+  async (req, res) => {
+
+    const { pin } = req.params;
+
+    const response = await axios.get(
+      `https://api.postalpincode.in/pincode/${pin}`,
+      {
+        httpsAgent: new (require("https").Agent)({
+          rejectUnauthorized: false,
+        }),
+      }
+    );
+
+    const data = response.data[0];
+
+    if (
+      data.Status !== "Success" ||
+      !data.PostOffice?.length
+    ) {
+      return res.status(404).json({
+        message: "Invalid pincode",
+      });
+    }
+
+    res.json({
+      city: data.PostOffice[0].District,
+      state: data.PostOffice[0].State,
+    });
+  }
+);
   
   const existingAddress = await Address.findOne({
     _id: req.params.id,
